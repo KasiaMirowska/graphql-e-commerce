@@ -10,7 +10,6 @@ const CollectionPreview = ({ title, items, history, match }) => (
     <h1
       className='title'
       onClick={() => {
-        console.log('WTF>?????????????????????', match, title)
         history.push(`${match.path}/${title.toLowerCase()}`)}}
     >
       {title.toUpperCase()}

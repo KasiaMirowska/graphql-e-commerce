@@ -12,16 +12,26 @@ import { store, persistor } from './redux/store';
 
 import './index.css';
 import App from './App';
+import {resolvers, typeDefs} from './graphql/resolvers';
 
 
 const httpLink = createHttpLink({
   uri: 'https://crwn-clothing.com' //endpoint from playground to graphql server
 })
-const cache = new InMemoryCache(); //a class holding chached data to avoid double requests
+const cache = new InMemoryCache(); //a class holding chached data to avoid double requests, also to replace redux as a single source of truth state managment
 const client = new ApolloClient({
   link: httpLink,
   cache,
+  typeDefs, //now client has access to the new mutations
+  resolvers
 });
+
+//every time we click on mutation we trigger updating the below value, which rerenders all containers that listen for that value in a similar way as redux state updates all containers listening for that selector
+client.writeData({
+  data: {
+    cartHidden: true, //starting on replacing methods to control dropdown cart functionality
+  }
+})
 
 ReactDOM.render(
   <ApolloProvider client={client}>
