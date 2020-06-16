@@ -1,18 +1,33 @@
+
+import { addItemToCart } from './cart.utils';
+
 //called resolver because it is an object being pasted into the client in index that tells which features are 'resolved' when mutated. Mutation is changing data inside the db. THis file basicly sets up cache of data to replace redux
 
 import {gql} from 'apollo-boost';
 //we're writing a mutation to the db schema
 //this is a set of types which completely describe the set of possible data you can query on that service.  we're writing extend although there is no mutations in db yet but it just makes it safe for the future when there will be so that graphql knows to use that method 
 export const typeDefs = gql`
+    extend type Item {
+        quantity: Int
+    }
     extend type Mutation {
         ToggleCartHidden: Boolean!
+        AddItemToCart(item: Item!): [Item]!
     }
 `
 
+
+//writtig queries:
 //first need to read the initial value of cart => this query specifies that we getting the value from cached data not directly from db
 const GET_CART_HIDDEN = gql` 
     {
         cartHidden @client
+    }
+`;
+
+const GET_CART_ITEMS = gql`
+    {
+        cartItems @client
     }
 `
 //actual mutation below that mirrors graphql server
@@ -32,6 +47,22 @@ export const resolvers = {
             });
 
             return !cartHidden;
+        },
+
+        addItemToCart: (_root, {item}, {cache}, _info) => {
+            console.log("HERERERERE", {item}, cache.readQuery({query: GET_CART_ITEMS}))
+            const {cartItems} = cache.readQuery({
+                query: GET_CART_ITEMS
+            });
+
+            const newCartItems = addItemToCart(cartItems, item)
+
+            cache.writeQuery({
+                query: GET_CART_ITEMS,
+                data: {cartItems: newCartItems}
+            })
+            console.log(newCartItems, 'NEA CART????')
+            return newCartItems;
         }
     }
 }

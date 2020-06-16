@@ -26,10 +26,11 @@ const client = new ApolloClient({
   resolvers
 });
 
-//every time we click on mutation we trigger updating the below value, which rerenders all containers that listen for that value in a similar way as redux state updates all containers listening for that selector
+//every time we click on mutation we trigger updating the below value, which rerenders all containers that listen for that value in a similar way as redux state updates all components listening for that selector
 client.writeData({
   data: {
     cartHidden: true, //starting on replacing methods to control dropdown cart functionality
+    cartItems: [], //initial state of cart (like inside redux reducer)
   }
 })
 
