@@ -10,7 +10,7 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
         : cartItem
     );
   }
-  console.log(cartItems, 'IN THE UTIL!!!!!!!')
+
   return [...cartItems, { ...cartItemToAdd, quantity: 1 }];
 };
 
@@ -30,11 +30,8 @@ export const removeItemFromCart = (cartItems, cartItemToRemove) => {
   );
 };
 
-
-export const getCartItemsCount = (cartItems) => {
-  return cartItems.reduce(
-    (accumalatedQuantity, cartItem) =>
-      accumalatedQuantity + cartItem.quantity,
+export const getCartItemCount = cartItems =>
+  cartItems.reduce(
+    (accumalatedQuantity, cartItem) => accumalatedQuantity + cartItem.quantity,
     0
-  )
-}
+  );

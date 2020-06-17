@@ -1,26 +1,24 @@
 import React from 'react';
-import { Mutation, Query } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
+
 import CollectionItem from './collection-item.component';
 
 const ADD_ITEM_TO_CART = gql`
-    mutation AddItemToCart($item: Item!) {
-        addItemToCart(item: $item) @client
-    }
+  mutation AddItemToCart($item: Item!) {
+    addItemToCart(item: $item) @client
+  }
 `;
 
-
-//we're getting the item that we want to add as props from collectionPreview
-const CollectionItemContainer = (props) => (
-    <Mutation mutation={ADD_ITEM_TO_CART}>
-        {addItemToCart => (
-            <CollectionItem
-                {...props}
-                addItem={item => addItemToCart({ variables: { item } })}
-            />
-        )}
-    </Mutation>
-
-)
+const CollectionItemContainer = props => (
+  <Mutation mutation={ADD_ITEM_TO_CART}>
+    {addItemToCart => (
+      <CollectionItem
+        {...props}
+        addItem={item => addItemToCart({ variables: { item } })}
+      />
+    )}
+  </Mutation>
+);
 
 export default CollectionItemContainer;

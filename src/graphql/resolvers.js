@@ -1,20 +1,19 @@
-
-import { addItemToCart, getCartItemsCount } from './cart.utils';
+import { gql } from 'apollo-boost';
+import { addItemToCart, getCartItemCount } from './cart.utils';
 
 //called resolver because it is an object being pasted into the client in index that tells which features are 'resolved' when mutated. Mutation is changing data inside the db. THis file basicly sets up cache of data to replace redux
 
-import {gql} from 'apollo-boost';
 //we're writing a mutation to the db schema
 //this is a set of types which completely describe the set of possible data you can query on that service.  we're writing extend although there is no mutations in db yet but it just makes it safe for the future when there will be so that graphql knows to use that method 
 export const typeDefs = gql`
-    extend type Item {
-        quantity: Int
-    }
-    extend type Mutation {
-        ToggleCartHidden: Boolean!
-        AddItemToCart(item: Item!): [Item]!
-    }
-`
+  extend type Item {
+    quantity: Int
+  }
+  extend type Mutation {
+    ToggleCartHidden: Boolean!
+    AddItemToCart(item: Item!): [Item]!
+  }
+`;
 
 
 //writtig queries:
@@ -42,36 +41,37 @@ const GET_ITEM_COUNT = gql`
 // _context is an object shared by all the resolvers of a specific execution. we can also just use it as destructered {cache}
 export const resolvers = {
     Mutation: {
-        toggleCartHidden:(_root, _args, {cache}, _info) => {
-            const {cartHidden} = cache.readQuery({
-                query: GET_CART_HIDDEN
-            })
-            //similar to setState, we're changing the boolean of cartHidden method
-            cache.writeQuery({
-                query: GET_CART_HIDDEN,
-                data: {cartHidden: !cartHidden}
-            });
-
-            return !cartHidden;
-        },
-
-        addItemToCart: (_root, {item}, {cache}, _info) => {
-            console.log("HERERERERE", {item}, cache.readQuery({query: GET_CART_ITEMS}))
-            const {cartItems} = cache.readQuery({
-                query: GET_CART_ITEMS
-            });
-
-            const newCartItems = addItemToCart(cartItems, item)
-            cache.writeQuery({
-                query: GET_ITEM_COUNT,
-                data: { itemCount: getCartItemsCount(newCartItems)}
-            })
-            cache.writeQuery({
-                query: GET_CART_ITEMS,
-                data: {cartItems: newCartItems}
-            })
-            console.log(newCartItems, 'NEA CART????')
-            return newCartItems;
-        }
+      toggleCartHidden: (_root, _args, { cache }) => {
+        const { cartHidden } = cache.readQuery({
+          query: GET_CART_HIDDEN
+        });
+  
+        cache.writeQuery({
+          query: GET_CART_HIDDEN,
+          data: { cartHidden: !cartHidden }
+        });
+  
+        return !cartHidden;
+      },
+  
+      addItemToCart: (_root, { item }, { cache }) => {
+        const { cartItems } = cache.readQuery({
+          query: GET_CART_ITEMS
+        });
+  
+        const newCartItems = addItemToCart(cartItems, item);
+  
+        cache.writeQuery({
+          query: GET_ITEM_COUNT,
+          data: { itemCount: getCartItemCount(newCartItems) }
+        });
+  
+        cache.writeQuery({
+          query: GET_CART_ITEMS,
+          data: { cartItems: newCartItems }
+        });
+  
+        return newCartItems;
+      }
     }
-}
+  };

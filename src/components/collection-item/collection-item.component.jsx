@@ -1,12 +1,12 @@
 import React from 'react';
+
 import CustomButton from '../custom-button/custom-button.component';
 
 import './collection-item.styles.scss';
 
 const CollectionItem = ({ item, addItem }) => {
   const { name, price, imageUrl } = item;
-  
-  console.log(item, addItem, 'IN COL????????')//addItem returns here as undefined
+
   return (
     <div className='collection-item'>
       <div
