@@ -10,7 +10,7 @@ export const addItemToCart = (cartItems, cartItemToAdd) => {
         : cartItem
     );
   }
-
+  console.log(cartItems, 'IN THE UTIL!!!!!!!')
   return [...cartItems, { ...cartItemToAdd, quantity: 1 }];
 };
 

@@ -19,6 +19,7 @@ const httpLink = createHttpLink({
   uri: 'https://crwn-clothing.com' //endpoint from playground to graphql server
 })
 const cache = new InMemoryCache(); //a class holding chached data to avoid double requests, also to replace redux as a single source of truth state managment
+console.log(cache, 'CACHECAHCE')
 const client = new ApolloClient({
   link: httpLink,
   cache,
