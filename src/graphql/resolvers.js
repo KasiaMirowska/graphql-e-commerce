@@ -1,5 +1,5 @@
 
-import { addItemToCart } from './cart.utils';
+import { addItemToCart, getCartItemsCount } from './cart.utils';
 
 //called resolver because it is an object being pasted into the client in index that tells which features are 'resolved' when mutated. Mutation is changing data inside the db. THis file basicly sets up cache of data to replace redux
 
@@ -29,6 +29,12 @@ const GET_CART_ITEMS = gql`
     {
         cartItems @client
     }
+`;
+
+const GET_ITEM_COUNT = gql`
+    {
+        itemsCount @client
+    }
 `
 //actual mutation below that mirrors graphql server
 // root is top level object that holds the type of the top level query or mutation
@@ -56,7 +62,10 @@ export const resolvers = {
             });
 
             const newCartItems = addItemToCart(cartItems, item)
-
+            cache.writeQuery({
+                query: GET_ITEM_COUNT,
+                data: { itemCount: getCartItemsCount(newCartItems)}
+            })
             cache.writeQuery({
                 query: GET_CART_ITEMS,
                 data: {cartItems: newCartItems}

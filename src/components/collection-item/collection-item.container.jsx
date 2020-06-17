@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mutation } from 'react-apollo';
+import { Mutation, Query } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import CollectionItem from './collection-item.component';
 
@@ -17,9 +17,10 @@ const CollectionItemContainer = (props) => (
             <CollectionItem
                 {...props}
                 addItem={item => addItemToCart({ variables: { item } })}
-            />    
+            />
         )}
     </Mutation>
+
 )
 
 export default CollectionItemContainer;
